@@ -1,0 +1,5 @@
+“In JavaScript, synchronous code runs on the call stack and blocks execution, while asynchronous operations like API calls, database queries, and file reads can be handled in a non-blocking way using async APIs. These operations are offloaded to the OS or libuv, allowing the event loop to continue executing other code. Once the async operation completes, its callback or promise handler is queued—promises go to the microtask queue and timers or I/O callbacks go to the macrotask queue. We use callbacks, promises, and async/await to handle these asynchronous results in a structured and readable way.”
+
+"V8 engine is responsible for converting our javascript code to machine code,written in c or c++ ,where as node is a c or c++ application which has v8 engine and other requirements like libuv etc  to talk with other process like db process or creating a server or interacting with os about files to make javascript a server side language and node js is a run time environment "
+
+"JavaScript is a single threaded ,event loop"

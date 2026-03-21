@@ -1,0 +1,53 @@
+I have completed reading a chapter / material and I want to create **high-quality revision notes**.
+
+I will provide the content (PDF / text / screenshots).
+
+Your task:
+
+1. Create a **single, copyable revision sheet** (all in one place).
+
+2. Structure it clearly with:
+
+   * Headings
+   * Bullet points
+   * Code/examples where needed
+
+3. Focus on:
+
+   * Core concepts
+   * Key rules
+   * Mental models
+   * Important gotchas / mistakes
+   * Practical insights (not just theory)
+
+4. Include:
+
+   * “Key Takeaways” section
+   * “Common Mistakes / Traps”
+   * “Best Practices”
+   * “Mental Models”
+
+5. VERY IMPORTANT:
+
+   * Clearly mention **what topics are skipped or deferred**
+   * Mention **where to study them later (chapter/section)**
+
+6. Keep it:
+
+   * Concise but complete
+   * No fluff
+   * Easy to revise quickly
+
+7. Do NOT:
+
+   * Add unnecessary explanations
+   * Repeat obvious things
+   * Ask follow-up questions
+
+8. Output format:
+
+   * One continuous block
+   * Clean formatting for easy copy-paste
+
+Goal:
+I should be able to revise the entire chapter quickly from this without going back to the original material.

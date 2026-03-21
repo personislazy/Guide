@@ -1,0 +1,422 @@
+# CSS IN DEPTH — CHAPTER 1 REVISION NOTES
+
+(Source: )
+
+---
+
+# 1. CORE IDEA OF CSS
+
+* CSS is **declarative**, not procedural.
+* You define rules → browser decides what applies.
+* Problems in CSS = **conflicting rules + unpredictability**
+
+---
+
+# 2. BASIC TERMINOLOGY
+
+* **Declaration** → `color: black;`
+* **Property** → `color`
+* **Value** → `black`
+* **Declaration block** → `{ color: black; }`
+* **Selector** → `body`
+* **Ruleset** → selector + declaration block
+* **At-rules** → `@media`, `@import`
+
+---
+
+# 3. THE CASCADE (MOST IMPORTANT CONCEPT)
+
+When multiple rules conflict → browser resolves using:
+
+## 6 Criteria (in order):
+
+1. **Origin**
+2. **Inline styles**
+3. **Layer** (SKIPPED for now)
+4. **Specificity**
+5. **Scope proximity** (SKIPPED)
+6. **Source order**
+
+---
+
+# 4. STYLESHEET ORIGIN
+
+Types of origins:
+
+* **User-agent** (browser defaults)
+* **User styles**
+* **Author styles** (your CSS)
+
+## Normal Order:
+
+Author > User > User-agent
+
+---
+
+## IMPORTANT RULES (VERY IMPORTANT)
+
+Using `!important` creates a higher-priority origin.
+
+### Correct Order (Descending):
+
+1. Important user-agent
+2. Important user
+3. Important author
+4. Normal author
+5. Normal user
+6. Normal user-agent
+
+KEY INSIGHT:
+
+* **Important reverses origin order**
+
+---
+
+# 5. INLINE STYLES
+
+```html
+<div style="color: red;">
+```
+
+* Belongs to **author origin (normal)**
+* Overrides all normal CSS
+* Can only be overridden by:
+
+  * `!important`
+
+---
+
+# 6. SELECTOR SPECIFICITY
+
+Used when origin + inline cannot decide.
+
+## Rules:
+
+1. More IDs → wins
+2. If tie → more classes → wins
+3. If tie → more tags → wins
+
+---
+
+## Important Notes:
+
+* ID > class > tag
+* Multiple classes < single ID
+* Pseudo-classes (`:hover`) = class level
+* Universal selector `*` → no effect
+
+---
+
+## Problem Pattern:
+
+* High specificity → hard to override
+* Leads to **"specificity wars"**
+
+---
+
+## Best Practice:
+
+* Keep specificity **LOW**
+* Avoid IDs unless necessary
+
+---
+
+# 7. FIXING SPECIFICITY CONFLICTS
+
+### BAD:
+
+```css
+.featured {
+  background: orange !important;
+}
+```
+
+### BETTER:
+
+* Increase specificity
+* OR reduce competing selector specificity
+
+### BEST:
+
+* Keep selectors simple and consistent
+
+---
+
+# 8. SOURCE ORDER
+
+If everything else is equal:
+
+> **Last rule wins**
+
+---
+
+## Example:
+
+```css
+.nav a { background: teal; }
+a.featured { background: orange; }
+```
+
+* Same specificity → last wins
+
+---
+
+# 9. LINK ORDER (LoVe/HAte)
+
+Correct order:
+
+1. `:link`
+2. `:visited`
+3. `:hover`
+4. `:active`
+
+Reason:
+
+* Same specificity → **source order matters**
+
+---
+
+## Shortcut:
+
+LoVe HAte
+
+---
+
+## Modern Tip:
+
+```css
+a:any-link
+```
+
+* Replaces `:link + :visited`
+* Targets all real links
+
+---
+
+# 10. CASCADED VALUE
+
+* Final chosen value for a property
+* Only **one value per property per element**
+
+---
+
+# 11. INHERITANCE (DIFFERENT FROM CASCADE)
+
+* If no value → may inherit from parent
+
+## Common inherited properties:
+
+* color
+* font-family
+* font-size
+* line-height
+* text-align
+
+---
+
+## Not inherited:
+
+* margin
+* padding
+* border
+
+---
+
+## Strategy:
+
+```css
+body {
+  font-family: sans-serif;
+}
+```
+
+→ All children inherit
+
+---
+
+# 12. SPECIAL KEYWORDS
+
+## 1. `inherit`
+
+* Force value from parent
+
+## 2. `initial`
+
+* Reset to default CSS value
+
+## 3. `unset`
+
+* Inherited property → inherit
+* Non-inherited → initial
+
+## 4. `revert`
+
+* Revert to user-agent styles
+
+---
+
+# 13. SHORTHAND PROPERTIES
+
+Example:
+
+```css
+font: italic bold 18px/1.2 Arial;
+```
+
+---
+
+## ⚠️ IMPORTANT GOTCHA
+
+Shorthand resets ALL related properties.
+
+Example:
+
+```css
+font: 32px Arial;
+```
+
+→ sets `font-weight: normal` implicitly
+
+---
+
+# 14. SHORTHAND ORDER RULES
+
+## TRBL (Clockwise)
+
+Top → Right → Bottom → Left
+
+```css
+padding: 10px 15px 0 5px;
+```
+
+---
+
+## 2-value shorthand:
+
+```css
+padding: vertical horizontal;
+```
+
+---
+
+## Cartesian Rule (x, y)
+
+Used in:
+
+* `background-position`
+* `box-shadow`
+
+```css
+box-shadow: 10px 2px;
+```
+
+---
+
+# 15. PROGRESSIVE ENHANCEMENT
+
+Idea:
+
+* Write fallback CSS
+* Add modern CSS later
+
+---
+
+## Example:
+
+```css
+background: #333;
+background: #333333aa;
+```
+
+* Old browsers ignore second line
+* New browsers use it
+
+---
+
+## SELECTOR WARNING
+
+```css
+input.invalid,
+input:user-invalid
+```
+
+→ Entire rule ignored if one selector unsupported
+
+### Fix:
+
+Split rules
+
+---
+
+## FEATURE QUERIES
+
+```css
+@supports (display: grid) {
+  ...
+}
+```
+
+Used for:
+
+* Conditional CSS
+* Modern feature support
+
+---
+
+# 16. DEVTOOLS (VERY IMPORTANT)
+
+Use DevTools to:
+
+* See applied styles
+* Identify overridden rules
+* Understand inheritance
+
+---
+
+# 17. BEST PRACTICES
+
+* Avoid IDs in selectors
+* Avoid `!important` (unless necessary)
+* Keep specificity low
+* Think in cascade layers, not hacks
+* Use DevTools frequently
+
+---
+
+# 18. WHAT YOU SKIPPED (IMPORTANT)
+
+## 1. Layers
+
+* Controls cascade explicitly
+* Covered in → **Chapter 8**
+
+## 2. Scope proximity
+
+* Determines closest scope wins
+* Covered in → **Chapter 9**
+
+## 3. Transitions & Animations
+
+* Add new cascade origins
+* Covered in → **Chapter 15 & 17**
+
+---
+
+# FINAL MENTAL MODEL
+
+When conflict happens:
+
+1. Importance
+2. Origin
+3. Inline
+4. Specificity
+5. Source order
+
+---
+
+# KEY INSIGHT TO REMEMBER
+
+* CSS is NOT random
+* It is **predictable if you follow the cascade rules**
+
+---
