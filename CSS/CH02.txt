@@ -1,0 +1,451 @@
+# CSS IN DEPTH — CHAPTER 2 REVISION NOTES (FINAL)
+
+(Source: )
+
+---
+
+# 1. CORE IDEA
+
+* CSS units:
+
+  * **Absolute** → fixed (px)
+  * **Relative** → dynamic (em, rem, vw)
+
+* Modern CSS favors **relative units** for:
+
+  * Responsiveness
+  * Accessibility
+  * Flexibility
+
+---
+
+# 2. ABSOLUTE UNITS
+
+* `px` → most common
+* Others: mm, cm, in, pt, pc
+
+---
+
+## ⚠️ Important
+
+* CSS pixel ≠ device pixel
+* ~96px ≈ 1 inch (approximate)
+
+---
+
+# 3. DEFAULT FONT SIZE (VERY IMPORTANT)
+
+* All browsers default:
+
+  ```
+  font-size: medium
+  ```
+* This evaluates to:
+
+  ```
+  16px
+  ```
+
+---
+
+## Conversion Formula
+
+To convert px → em/rem:
+
+```
+target / base = value
+```
+
+Example:
+
+```
+10px → 10 / 16 = 0.625em
+14px → 14 / 16 = 0.875em
+```
+
+---
+
+# 4. :ROOT SELECTOR
+
+```css
+:root {
+  font-size: 1em;
+}
+```
+
+* Targets the `<html>` element
+* Same as `html`, BUT:
+
+  * Has **class-level specificity**
+* Used to define:
+
+  * Global font-size
+  * CSS variables
+
+---
+
+# 5. WHY RELATIVE UNITS
+
+* Web is dynamic:
+
+  * Different screens
+  * User zoom
+  * Font settings
+
+→ Relative units adapt automatically
+
+---
+
+# 6. EMS (em)
+
+## Definition:
+
+* `1em = current element’s font-size`
+
+---
+
+## Behavior:
+
+### Non-font properties:
+
+* Based on **current element**
+
+### font-size:
+
+* Based on **inherited font-size**
+
+---
+
+## Example:
+
+```css
+padding: 1em;
+```
+
+---
+
+# 7. EM GOTCHA
+
+```css
+.slogan {
+  font-size: 1.2em;
+  padding: 1.2em;
+}
+```
+
+* font-size → parent-based
+* padding → computed font-size
+
+→ Same value, different result
+
+---
+
+# 8. EM POWER
+
+```css
+.box {
+  padding: 1em;
+}
+.box-large {
+  font-size: 18px;
+}
+```
+
+→ Entire component scales
+
+---
+
+# 9. EM PROBLEM — SHRINKING
+
+```css
+ul {
+  font-size: 0.8em;
+}
+```
+
+→ Nested elements shrink repeatedly
+
+---
+
+## Fix:
+
+```css
+ul ul {
+  font-size: 1em;
+}
+```
+
+---
+
+# 10. REM (ROOT EM)
+
+## Definition:
+
+* `1rem = root font-size`
+
+---
+
+## Example:
+
+```css
+:root {
+  font-size: 1em;
+}
+
+p {
+  font-size: 1rem;
+}
+```
+
+---
+
+## Advantage:
+
+* Stable
+* No nesting issues
+
+---
+
+# 11. UNIT STRATEGY (IMPORTANT)
+
+* font-size → `rem`
+* spacing → `em`
+* border → `px`
+
+---
+
+# 12. ROOT FONT SIZE STRATEGY
+
+```css
+:root {
+  font-size: 0.875em; /* 14px */
+}
+```
+
+---
+
+## Why use `em` at root?
+
+* Respects user settings
+* Keeps scaling flexible
+* Works perfectly with:
+
+  * `calc()`
+  * `clamp()`
+
+---
+
+## Key Insight:
+
+> Root in `em` → entire system remains scalable
+
+---
+
+# 13. RESPONSIVE SCALING (ROOT BASED)
+
+```css
+:root {
+  font-size: 0.85em;
+}
+
+@media (min-width: 800px) {
+  :root { font-size: 1em; }
+}
+```
+
+---
+
+## Effect:
+
+* Whole UI scales
+* Fewer media queries needed
+
+---
+
+# 14. COMPONENT SCALING
+
+```css
+.panel {
+  font-size: 1rem;
+}
+
+.panel.large {
+  font-size: 1.2rem;
+}
+```
+
+→ One change → entire component resizes
+
+---
+
+# 15. VIEWPORT UNITS
+
+## Basics:
+
+* `vw` → width %
+* `vh` → height %
+* `vmin` → smaller side
+* `vmax` → larger side
+
+---
+
+# 16. MOBILE ISSUE WITH VH
+
+* Viewport changes on scroll
+* Causes layout jumps
+
+---
+
+## New Units:
+
+* Large → `lvh`, `lvw`
+* Small → `svh`, `svw`
+* Dynamic → `dvh`, `dvw`
+
+---
+
+## Recommended:
+
+* Use **svh/svw** by default
+
+---
+
+# 17. RESPONSIVE FONT (ADVANCED)
+
+## Using calc():
+
+```css
+font-size: calc(0.5em + 1svw);
+```
+
+---
+
+## Using clamp() (BEST):
+
+```css
+font-size: clamp(0.9rem, 0.6rem + 0.5svw, 1.5rem);
+```
+
+---
+
+## Why this works well:
+
+* Root uses `em`
+* clamp uses `rem + vw`
+  → Fully scalable system
+
+---
+
+# 18. UNITLESS VALUES
+
+```css
+line-height: 1.2;  /* Correct */
+```
+
+---
+
+## ❌ Avoid:
+
+```css
+line-height: 1.2em;
+```
+
+---
+
+## Reason:
+
+* Unitless → recalculated per element
+* With units → fixed value inherited
+
+---
+
+# 19. CUSTOM PROPERTIES (VARIABLES)
+
+## Define:
+
+```css
+:root {
+  --main-color: blue;
+}
+```
+
+---
+
+## Use:
+
+```css
+color: var(--main-color);
+```
+
+---
+
+## With fallback:
+
+```css
+color: var(--secondary, red);
+```
+
+---
+
+# 20. VARIABLES + CASCADE
+
+```css
+:root {
+  --color: black;
+}
+
+.dark {
+  --color: white;
+}
+```
+
+→ Context-based styling
+
+---
+
+# 21. MENTAL MODELS
+
+* em → local scaling
+* rem → global scaling
+* root(em) → system scaling
+* vw/vh → screen scaling
+* clamp → controlled scaling
+
+---
+
+# 22. COMMON MISTAKES
+
+* Nested em font sizes
+* Thinking in pixels
+* Using vh blindly
+* Using units in line-height
+* Ignoring root font-size
+
+---
+
+# 23. BEST PRACTICES
+
+* Use rem for fonts
+* Use em for spacing
+* Use clamp for responsiveness
+* Use variables for reuse
+* Keep system scalable from root
+
+---
+
+# 24. WHAT YOU SKIPPED / NEXT
+
+* Responsive design → Chapter 7
+* Layout systems (Grid) → Chapter 5
+* Logical properties → Chapter 3
+* Advanced variables → later chapters
+
+---
+
+# FINAL TAKEAWAY
+
+* Relative units = scalable systems
+* Root font-size = foundation
+* em + rem + clamp = powerful combo
+
+---
