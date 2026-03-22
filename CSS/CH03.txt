@@ -1,0 +1,551 @@
+# CSS in Depth — Chapter 3 Revision Sheet (Enhanced)
+
+---
+
+# 1. Normal Document Flow
+
+### Core Concepts
+
+* **Block elements**
+
+  * Fill full width of parent
+  * Stack vertically
+* **Inline elements**
+
+  * Flow horizontally with text
+  * Wrap when needed
+
+### Fundamental Rule
+
+```text
+Width → controlled by parent
+Height → controlled by children
+```
+
+---
+
+# 2. Width Behavior & Shrinking (IMPORTANT)
+
+### When width is NOT explicitly set (`width: auto`)
+
+* Element tries to fill available space
+* But when **padding is added**, browser adjusts
+
+### Key Behavior (Content-box default)
+
+```text
+Parent width = fixed (e.g., 1080px)
+Child = width: auto + padding
+→ Browser SHRINKS content to fit inside parent
+```
+
+✔ This is why `.main` worked fine
+✔ Padding did NOT break layout
+
+---
+
+### But when width IS constrained (`max-width`)
+
+```css
+h1 {
+  max-width: 1080px;
+  padding: 24px;
+}
+```
+
+```text
+content = 1080px
+padding = +48px
+→ total = 1128px ❌
+```
+
+❌ No shrinking happens
+❌ Layout breaks
+
+---
+
+### Key Insight
+
+```text
+Auto width → flexible → shrinks
+Fixed/max width → rigid → overflows
+```
+
+---
+
+# 3. What We Did BEFORE `border-box` (Book’s Approach)
+
+### Problem
+
+* Header text misaligned due to padding
+
+### Attempted Fix (Bad)
+
+```css
+h1 {
+  max-width: calc(1080px - 3em);
+}
+```
+
+✔ Manually subtract padding
+❌ This is a **magic number**
+
+---
+
+### Why it’s bad
+
+* Hard to maintain
+* Breaks with font-size changes
+* Not scalable
+
+---
+
+### Proper Fix (Final)
+
+```css
+h1 {
+  box-sizing: border-box;
+}
+```
+
+✔ Padding included inside width
+✔ No manual calculation
+
+---
+
+# 4. Box Model (Deep Understanding)
+
+### Default (`content-box`)
+
+```text
+width = content only
+padding/border = added outside
+```
+
+### Border-box
+
+```text
+width = content + padding + border
+```
+
+---
+
+### Mental Model
+
+```text
+content-box → grows outward
+border-box → shrinks inward
+```
+
+---
+
+# 5. Inline Elements — Special Behavior
+
+### Important Rule (from book)
+
+```text
+Top/Bottom padding & margin:
+→ affect visual size
+→ BUT do NOT affect layout height contribution
+```
+
+---
+
+### Example
+
+```css
+span {
+  padding-top: 20px;
+}
+```
+
+✔ Visually increases space
+❌ Does NOT push other elements
+
+---
+
+### Why?
+
+```text
+Inline layout uses line-height, not box size
+```
+
+---
+
+### Fix if needed
+
+```css
+display: inline-block;
+```
+
+✔ Now behaves like block for sizing
+
+---
+
+# 6. Logical Properties & Writing Modes
+
+### Replace:
+
+* left/right → inline-start/end
+* top/bottom → block-start/end
+
+---
+
+## Writing Modes Behavior
+
+### 1. LTR (English)
+
+```text
+inline → left → right
+block → top → bottom
+```
+
+---
+
+### 2. RTL (Arabic)
+
+```text
+inline → right → left
+block → top → bottom
+```
+
+---
+
+### 3. Vertical (Japanese)
+
+```text
+inline → top → bottom
+block → right → left
+```
+
+---
+
+## Key Insight
+
+```text
+Inline = text direction
+Block = stacking direction
+```
+
+---
+
+## Why this matters
+
+```css
+margin-inline-start: 1rem;
+```
+
+✔ Works in all writing modes
+✔ No need to rewrite CSS
+
+---
+
+# 7. Margin Collapsing (Enhanced)
+
+### Standard Behavior
+
+* Only **block direction margins collapse**
+
+---
+
+## In Horizontal Writing (default)
+
+```text
+Top & Bottom collapse
+Left & Right DO NOT collapse
+```
+
+---
+
+## In Vertical Writing Mode
+
+```text
+Left & Right collapse
+Top & Bottom DO NOT collapse
+```
+
+---
+
+### Why?
+
+```text
+Collapsing happens in BLOCK direction
+```
+
+---
+
+## Mental Model
+
+```text
+Block direction = collapse direction
+Inline direction = no collapse
+```
+
+---
+
+# 8. Negative Margins (Thorough)
+
+### Behavior depends on side
+
+---
+
+## 1. Top / Left
+
+```text
+Moves element upward / left
+Can overlap previous elements
+```
+
+---
+
+## 2. Bottom
+
+```text
+Does NOT move element
+Pulls NEXT elements upward
+```
+
+---
+
+## 3. Right (Block Elements)
+
+```text
+Expands element width outward
+May overflow container
+```
+
+---
+
+## Combined Example
+
+```css
+.element {
+  margin-left: -20px;
+  margin-right: -20px;
+}
+```
+
+```text
+Element becomes wider than container
+```
+
+---
+
+## Use Case
+
+* “Bleeding” content outside container
+
+---
+
+## Risks
+
+* Overlapping elements unintentionally
+* Breaking layout on small screens
+* Click issues (hidden behind elements)
+
+---
+
+## Key Insight
+
+```text
+Negative margin does NOT behave uniformly
+→ depends on direction + layout type
+```
+
+---
+
+# 9. Height (Reinforced)
+
+### Key Rule
+
+```text
+Height = natural (content-driven)
+Width = constrained
+```
+
+---
+
+## % Height Problem
+
+```text
+child → depends on parent
+parent → depends on child
+→ circular → ignored
+```
+
+---
+
+## Correct Approach
+
+```css
+min-height: 100vh;
+```
+
+✔ Independent
+✔ Reliable
+
+---
+
+# 10. Spacing Strategy
+
+### Bad Pattern
+
+```text
+Padding + margins mixed randomly
+```
+
+---
+
+### Good Pattern
+
+```css
+.stack > * + * {
+  margin-block-start: 1.5em;
+}
+```
+
+✔ Consistent
+✔ Scalable
+
+---
+
+# 🔑 Key Takeaways
+
+* Auto-width elements shrink to accommodate padding; fixed-width elements do not
+* `border-box` eliminates padding-related layout issues
+* Inline elements ignore vertical spacing in layout calculations
+* Margin collapsing depends on **block direction**
+* Negative margins behave differently per side
+* Logical properties future-proof layouts
+* Avoid magic numbers — let browser calculate
+
+---
+
+# ⚠️ Common Mistakes / Traps
+
+* Assuming padding always behaves the same
+* Forgetting inline elements ignore vertical spacing
+* Using `% height` without parent height
+* Using `calc()` to fix layout (temporary hack)
+* Misunderstanding negative margin behavior
+* Ignoring writing modes (LTR bias)
+
+---
+
+# ✅ Best Practices
+
+* Always apply:
+
+```css
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+```
+
+* Prefer:
+
+```css
+min-height > height
+```
+
+* Use:
+
+```css
+logical properties
+```
+
+* Use structural spacing (`stack`) instead of manual margins
+
+---
+
+# 🧠 Mental Models
+
+### 1. Width vs Height
+
+```text
+Width = imposed
+Height = emerges
+```
+
+---
+
+### 2. Box Model
+
+```text
+content-box → expands outward
+border-box → fits inward
+```
+
+---
+
+### 3. Margin Collapse
+
+```text
+Collapse happens ONLY in block direction
+```
+
+---
+
+### 4. Negative Margins
+
+```text
+Not spacing — they are positioning hacks
+```
+
+---
+
+### 5. Inline Elements
+
+```text
+Visual ≠ Layout impact
+```
+
+---
+
+# 📌 Skipped / Deferred Topics
+
+### 1. Positioning (Absolute / Fixed)
+
+* Mentioned for % height use case
+* 📍 Later chapter
+
+---
+
+### 2. Flexbox & Grid
+
+* Equal height columns
+* Preventing margin collapse
+* 📍 Next chapters
+
+---
+
+### 3. Advanced Writing Modes
+
+* Only fundamentals covered
+* 📍 Explore deeper if working with RTL/vertical layouts
+
+---
+
+# 🚀 Final Summary
+
+This chapter teaches:
+
+```text
+How browsers THINK about layout
+```
+
+If you internalize:
+
+```text
+“Block direction controls height behavior”
+```
+
+and
+
+```text
+“Width constraints + padding = potential break”
+```
+
+→ You will avoid most CSS layout bugs.

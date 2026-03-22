@@ -336,6 +336,13 @@ font-size: clamp(0.9rem, 0.6rem + 0.5svw, 1.5rem);
 
 ---
 
+Two other related functions that may be useful from time to time are
+min() and max(). Min resolves to the smallest of the given values (e.g., width:
+min(200px, 20svw);). Max resolves to the largest of the given values (e.g.,
+min-height: max(200px, 20svw);)
+
+---
+
 # 18. UNITLESS VALUES
 
 ```css
